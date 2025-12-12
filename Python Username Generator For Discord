@@ -1,0 +1,21 @@
+import random
+
+adjectives = [
+    "Blue", "Swift", "Silent", "Electric", "Cosmic",
+    "Shadow", "Lucky", "Turbo", "Pixel", "Neon"
+]
+
+nouns = [
+    "Wolf", "Falcon", "Knight", "Dragon", "Ninja",
+    "Coder", "Storm", "Rider", "Phoenix", "Galaxy"
+]
+
+def generate_username():
+    adj = random.choice(adjectives)
+    noun = random.choice(nouns)
+    num = random.randint(10, 9999)
+    return f"{adj}{noun}{num}"
+
+# Generate 10 usernames
+for _ in range(10):
+    print(generate_username())
