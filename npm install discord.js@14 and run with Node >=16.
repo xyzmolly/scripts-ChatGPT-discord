@@ -1,0 +1,37 @@
+// invite-bot.js
+const { Client, GatewayIntentBits } = require('discord.js');
+const client = new Client({
+  intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent ]
+});
+
+const PREFIX = '!'; // simple command prefix
+
+client.once('ready', () => console.log(`Logged in as ${client.user.tag}`));
+
+client.on('messageCreate', async (msg) => {
+  if (msg.author.bot) return;
+  if (!msg.content.startsWith(PREFIX)) return;
+
+  const args = msg.content.slice(PREFIX.length).trim().split(/\s+/);
+  const cmd = args.shift().toLowerCase();
+
+  if (cmd === 'geninvite') {
+    // requires bot have Create Instant Invite permission in the channel
+    try {
+      // create invite for the channel where command was run
+      const invite = await msg.channel.createInvite({
+        maxAge: 3600,    // seconds (0 = never expire)
+        maxUses: 1,      // number of uses (0 = unlimited)
+        unique: true,
+        reason: `Invite created by ${msg.author.tag}`
+      });
+      await msg.reply(`Here you go: https://discord.gg/${invite.code}`);
+    } catch (err) {
+      console.error(err);
+      msg.reply('Failed to create invite — check my permissions.');
+    }
+  }
+});
+
+// put token in DISCORD_BOT_TOKEN env var
+client.login(process.env.DISCORD_BOT_TOKEN);
